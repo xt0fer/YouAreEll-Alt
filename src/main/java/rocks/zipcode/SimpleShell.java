@@ -14,28 +14,37 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 public class SimpleShell {
 
-
     public static <T> void prettyPrint(String output, Class<T> data) throws IOException {
+        //System.out.println("?? " + output);
         ObjectMapper mapper = new ObjectMapper();
         if (data.getSimpleName().equals("User")) {
-            List<User> myObjects = mapper.readValue(output, new TypeReference<List<User>>(){});
+            List<User> myObjects = mapper.readValue(output, new TypeReference<List<User>>() {
+            });
             for (User e : myObjects) {
                 e.print();
             }
         }
         if (data.getSimpleName().equals("Message")) {
-            List<Message> myObjects = mapper.readValue(output, new TypeReference<List<Message>>(){});
-            for (Message e : myObjects) {
-                e.print();
+            if (output.startsWith("[{")) {
+                List<Message> myObjects = mapper.readValue(output, new TypeReference<List<Message>>() {
+                });
+                for (Message e : myObjects) {
+                    e.print();
+                }
+            }
+            if (output.startsWith("{")) {
+                Message m = mapper.readValue(output, new TypeReference<Message>() {
+                });
+                m.print();
             }
         }
     }
+
     public static void main(String[] args) throws java.io.IOException {
 
-        YouAreEll webber = new YouAreEll();
+        YouAreEll yae = new YouAreEll();
         String commandLine;
-        BufferedReader console = new BufferedReader
-                (new InputStreamReader(System.in));
+        BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 
         ProcessBuilder pb = new ProcessBuilder();
         List<String> history = new ArrayList<String>();
@@ -46,6 +55,7 @@ public class SimpleShell {
             commandLine = console.readLine();
             List<String> list = new ArrayList<String>();
             Pattern regex = Pattern.compile("[^\\s\"']+|\"[^\"]*\"|'[^']*'");
+            // regex pattern breaks input into things sep by spaces and quotes
             Matcher regexMatcher = regex.matcher(commandLine);
             while (regexMatcher.find()) {
                 list.add(regexMatcher.group());
@@ -70,42 +80,42 @@ public class SimpleShell {
                 if (list.get(0).equals("ids")) {
                     if (list.size() > 1) {
                         User u = new User(list.get(1), list.get(2));
-                        prettyPrint(webber.postOrPutIds(u), User.class);
+                        prettyPrint(yae.idController().postOrPutIds(u), User.class);
                         continue;
                     }
-                    prettyPrint(webber.getIds(), User.class);
+                    prettyPrint(yae.idController().getIds(), User.class);
                     continue;
                 }
 
                 if (list.get(0).equals("messages")) {
                     if (list.size() == 2) {
-                        prettyPrint(webber.getMessagesMine(list.get(1)), Message.class);
+                        prettyPrint(yae.mesgController().getMessagesMine(list.get(1)), Message.class);
                         continue;
                     }
-                    prettyPrint(webber.getMessages(), Message.class);
+                    prettyPrint(yae.mesgController().getMessages(), Message.class);
                     continue;
                 }
 
                 if (list.get(0).equals("send")) {
                     if (list.size() == 3) {
                         Message m = new Message(list.get(1), list.get(2));
-                        prettyPrint(webber.postMessages(m), Message.class);
+                        prettyPrint(yae.mesgController().postMessages(m), Message.class);
                         continue;
                     } else {
                         Message m = new Message(list.get(1), list.get(4), list.get(2));
-                        prettyPrint(webber.postMessages(m), Message.class);
+                        prettyPrint(yae.mesgController().postMessages(m), Message.class);
                         continue;
                     }
                 }
 
-                //!! command returns the last command in history
+                // !! command returns the last command in history
                 if (list.get(list.size() - 1).equals("!!")) {
                     pb.command(history.get(history.size() - 2));
 
-                }//!<integer value i> command
+                } // !<integer value i> command
                 else if (list.get(list.size() - 1).charAt(0) == '!') {
                     int b = Character.getNumericValue(list.get(list.size() - 1).charAt(1));
-                    if (b <= history.size())//check if integer entered isn't bigger than history size
+                    if (b <= history.size())// check if integer entered isn't bigger than history size
                         pb.command(history.get(b));
                 } else {
                     pb.command(list);
@@ -114,27 +124,28 @@ public class SimpleShell {
                 // wait, wait, what curiousness is this?
                 Process process = pb.start();
 
-                //obtain the input stream
+                // obtain the input stream
                 InputStream is = process.getInputStream();
                 InputStreamReader isr = new InputStreamReader(is);
                 BufferedReader br = new BufferedReader(isr);
 
-                //read output of the process
+                // read output of the process
                 String line;
                 while ((line = br.readLine()) != null)
                     System.out.println(line);
                 br.close();
 
-
             }
 
-            //catch ioexception, output appropriate message, resume waiting for input
+            // catch ioexception, output appropriate message, resume waiting for input
             catch (IOException e) {
                 System.out.println("Input Error, Please try again!");
                 System.out.println(e);
+                e.printStackTrace();
             }
             // So what, do you suppose, is the meaning of this comment?
-            /** The steps are:
+            /**
+             * The steps are:
              * 1. parse the input to obtain the command and any parameters
              * 2. create a ProcessBuilder object
              * 3. start the process
@@ -143,7 +154,6 @@ public class SimpleShell {
              */
 
         }
-
 
     }
 
