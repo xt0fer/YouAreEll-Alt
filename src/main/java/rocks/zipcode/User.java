@@ -1,4 +1,4 @@
-package woat;
+package rocks.zipcode;
 
 public class User implements SimplePrint {
     private String userid;

@@ -1,4 +1,4 @@
-package woat;
+package rocks.zipcode;
 
 public class Message implements SimplePrint {
     private String sequence;

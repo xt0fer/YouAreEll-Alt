@@ -1,7 +1,4 @@
-package woat;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+package rocks.zipcode;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 public class SimpleShell {
 
