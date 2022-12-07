@@ -1,13 +1,15 @@
+package woat;
+
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+//
+import com.squareup.okhttp3.MediaType;
+import com.squareup.okhttp3.OkHttpClient;
+import com.squareup.okhttp3.Request;
+import com.squareup.okhttp3.RequestBody;
+import com.squareup.okhttp3.Response;
+import com.squareup.okhttp3.ResponseBody;
 
 public class YouAreEll {
     private OkHttpClient client = new OkHttpClient();

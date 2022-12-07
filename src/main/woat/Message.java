@@ -1,3 +1,5 @@
+package woat;
+
 public class Message implements SimplePrint {
     private String sequence;
     private String timestamp;

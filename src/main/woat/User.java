@@ -1,3 +1,5 @@
+package woat;
+
 public class User implements SimplePrint {
     private String userid;
     private String name;
