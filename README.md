@@ -4,7 +4,7 @@ __shorter version solution;__ woat originally did one very close to this.
 two versions here, one Java and one Go(!). The Go one is surprisingly idiomatic.
 -kristofer (12/2022)
 
-I like the use of the Square.com http package.
+I like the use of the [Square.com okhttp](https://square.github.io/okhttp/) package.
 
 at the `cmd?` prompt,
 
